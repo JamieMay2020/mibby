@@ -74,35 +74,9 @@
       pointer-events: none;
       z-index: 1;
     }
-
-    /* Click to Enter overlay */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #fcfbf9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      font-size: 28px;
-      font-weight: bold;
-      color: #000;
-      cursor: pointer;
-      transition: opacity 0.5s ease;
-    }
-
-    .overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
-
-<div class="overlay" id="overlay">Click to Enter</div>
 
 <div class="top-links">
   <a href="https://x.com" target="_blank">x.com</a>
@@ -123,38 +97,34 @@
 <script>
   const mainImage = document.getElementById('main');
   const audio = document.getElementById('dance-audio');
-  const overlay = document.getElementById('overlay');
 
   let activated = false;
   let backgroundGifs = [];
   let pressTimer;
   let longPressTriggered = false;
 
-  // Show site after overlay click
-  overlay.addEventListener('click', () => {
-    overlay.classList.add('hidden');
-
-    // Unlock audio on first user interaction
-    audio.muted = true;
-    audio.play().then(() => {
-      audio.pause();
-      audio.muted = false;
-    }).catch(() => { /* ignore */ });
-  }, { once: true });
+  // Pre-load audio for immediate playback
+  audio.load();
+  audio.volume = 0.2;
 
   function toggleGifs() {
     if (!activated) {
       activated = true;
       mainImage.src = 'frogg.gif';
 
-      // Resume audio from last position or start at 12s
-      if (audio.currentTime === 0) {
-        audio.currentTime = 47;
+      // Start audio at 47s position
+      audio.currentTime = 47;
+      
+      // Try to play audio immediately
+      const playPromise = audio.play();
+      
+      // Handle potential play() promise rejection (due to autoplay policies)
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn('Audio playback prevented:', error);
+          // We'll still show the visual effects even if audio fails
+        });
       }
-      audio.volume = 0.2;
-      audio.play().catch(err => {
-        console.warn('Audio failed to play:', err);
-      });
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
