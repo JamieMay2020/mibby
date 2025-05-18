@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image to GIF with Background Gifs</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #fcfbf9;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    .top-links {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      z-index: 20;
+    }
+
+    .top-links a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .label {
+      position: absolute;
+      top: 50px;
+      width: 100%;
+      color: #000;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .sub-label {
+      position: absolute;
+      top: 80px;
+      width: 100%;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .main-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      width: 300px;
+      height: auto;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .text-wrapper {
+      position: absolute;
+      top: calc(50% + 160px);
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: #333;
+      font-size: 18px;
+      font-style: italic;
+    }
+
+    .background-gif {
+      position: absolute;
+      width: 100px;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Click to Enter overlay */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fcfbf9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      font-size: 28px;
+      font-weight: bold;
+      color: #000;
+      cursor: pointer;
+      transition: opacity 0.5s ease;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">Click to Enter</div>
+
+<div class="top-links">
+  <a href="https://x.com" target="_blank">x.com</a>
+  <a href="https://pump.fun" target="_blank">pump.fun</a>
+</div>
+<div class="label">$mibby</div>
+<div class="sub-label">CA: 0xfarrr1123</div>
+
+<img src="frog.png" id="main" class="main-image" alt="Main">
+
+<div class="text-wrapper">
+  <div>just a spinny frog, nothing else</div>
+  <div>hang around for a while</div>
+</div>
+
+<audio id="dance-audio" src="audio.mp3"></audio>
+
+<script>
+  const mainImage = document.getElementById('main');
+  const audio = document.getElementById('dance-audio');
+  const overlay = document.getElementById('overlay');
+
+  let activated = false;
+  let backgroundGifs = [];
+  let pressTimer;
+  let longPressTriggered = false;
+
+  // Show site after overlay click
+  overlay.addEventListener('click', () => {
+    overlay.classList.add('hidden');
+
+    // Unlock audio on first user interaction
+    audio.muted = true;
+    audio.play().then(() => {
+      audio.pause();
+      audio.muted = false;
+    }).catch(() => { /* ignore */ });
+  }, { once: true });
+
+  function toggleGifs() {
+    if (!activated) {
+      activated = true;
+      mainImage.src = 'frogg.gif';
+
+      // Resume audio from last position or start at 12s
+      if (audio.currentTime === 0) {
+        audio.currentTime = 47;
+      }
+      audio.volume = 0.2;
+      audio.play().catch(err => {
+        console.warn('Audio failed to play:', err);
+      });
+
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const safeRadius = 180;
+
+      for (let i = 0; i < 30; i++) {
+        let x, y, dx, dy;
+        do {
+          x = Math.random() * window.innerWidth;
+          y = Math.random() * window.innerHeight;
+          dx = x - centerX;
+          dy = y - centerY;
+        } while (Math.sqrt(dx * dx + dy * dy) < safeRadius);
+
+        const gif = document.createElement('img');
+        gif.src = 'frogg.gif';
+        gif.classList.add('background-gif');
+        gif.style.left = `${x}px`;
+        gif.style.top = `${y}px`;
+        gif.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(gif);
+        backgroundGifs.push(gif);
+      }
+    } else {
+      activated = false;
+      mainImage.src = 'frog.png';
+      backgroundGifs.forEach(gif => gif.remove());
+      backgroundGifs = [];
+      audio.pause();
+    }
+  }
+
+  function startPressTimer() {
+    longPressTriggered = false;
+    pressTimer = setTimeout(() => {
+      longPressTriggered = true;
+      toggleGifs();
+    }, 8000);
+  }
+
+  function cancelPressTimer() {
+    clearTimeout(pressTimer);
+  }
+
+  mainImage.addEventListener('mousedown', startPressTimer);
+  mainImage.addEventListener('touchstart', startPressTimer);
+
+  mainImage.addEventListener('mouseup', cancelPressTimer);
+  mainImage.addEventListener('mouseleave', cancelPressTimer);
+  mainImage.addEventListener('touchend', cancelPressTimer);
+  mainImage.addEventListener('touchcancel', cancelPressTimer);
+
+  mainImage.addEventListener('click', () => {
+    if (pressTimer) clearTimeout(pressTimer);
+    if (longPressTriggered) return;
+    toggleGifs();
+  });
+</script>
+
+</body>
+</html>
