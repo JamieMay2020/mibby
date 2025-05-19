@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>gloopy</title>
-  <link rel="icon" type="image/x-icon" href="favicon-32x32.png">
+  <title>Image to GIF with Background Gifs</title>
   <style>
     body {
       margin: 0;
@@ -80,13 +79,13 @@
 <body>
 
 <div class="top-links">
-  <a href="https://x.com/gloopysolana"_blank">x.com</a>
-  <a href="https://pump.fun/coin/coming" target="_blank">pump.fun</a>
+  <a href="https://x.com" target="_blank">x.com</a>
+  <a href="https://pump.fun" target="_blank">pump.fun</a>
 </div>
-<div class="label">$gloopy</div>
-<div class="sub-label">CA: coming</div>
+<div class="label">$mibby</div>
+<div class="sub-label">CA: 0xfarrr1123</div>
 
-<img src="frog.png" id="main" class="main-image" alt="Main">
+<img src="fish.png" id="main" class="main-image" alt="Main">
 
 <div class="text-wrapper">
   <div>just a spinny frog, nothing else,</div>
@@ -111,10 +110,10 @@
   function toggleGifs() {
     if (!activated) {
       activated = true;
-      mainImage.src = 'frogg.gif';
+      mainImage.src = 'giphy.gif';
 
       // Start audio at 47s position
-      audio.currentTime = 47;
+      audio.currentTime = 47; //47
       
       // Try to play audio immediately
       const playPromise = audio.play();
@@ -131,7 +130,7 @@
       const centerY = window.innerHeight / 2;
       const safeRadius = 180;
 
-      for (let i = 0; i < 31; i++) {
+      for (let i = 0; i < 30; i++) {
         let x, y, dx, dy;
         do {
           x = Math.random() * window.innerWidth;
@@ -141,7 +140,7 @@
         } while (Math.sqrt(dx * dx + dy * dy) < safeRadius);
 
         const gif = document.createElement('img');
-        gif.src = 'frogg.gif';
+        gif.src = 'giphy.gif';
         gif.classList.add('background-gif');
         gif.style.left = `${x}px`;
         gif.style.top = `${y}px`;
@@ -151,7 +150,7 @@
       }
     } else {
       activated = false;
-      mainImage.src = 'frog.png';
+      mainImage.src = 'fish.png';
       backgroundGifs.forEach(gif => gif.remove());
       backgroundGifs = [];
       audio.pause();
