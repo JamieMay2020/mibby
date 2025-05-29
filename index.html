@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>mibby</title>
-  <link rel="icon" type="image/png" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" href="favicon.ico">
   <style>
     body {
       margin: 0;
@@ -86,7 +86,7 @@
 <div class="label">$mibby</div>
 <div class="sub-label">CA: coming</div>
 
-<img src="fish.png" id="main" class="main-image" alt="Main">
+<img src="frog.png" id="main" class="main-image" alt="Main">
 
 <div class="text-wrapper">
   <div>just a spinning frog,</div>
@@ -111,7 +111,7 @@
   function toggleGifs() {
     if (!activated) {
       activated = true;
-      mainImage.src = 'giphy.gif';
+      mainImage.src = 'frogg.gif';
 
       // Start audio at 47s position
       audio.currentTime = 47; //47
@@ -141,7 +141,7 @@
         } while (Math.sqrt(dx * dx + dy * dy) < safeRadius);
 
         const gif = document.createElement('img');
-        gif.src = 'giphy.gif';
+        gif.src = 'frogg.gif';
         gif.classList.add('background-gif');
         gif.style.left = `${x}px`;
         gif.style.top = `${y}px`;
